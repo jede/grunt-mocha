@@ -66,6 +66,16 @@ module.exports = function(grunt) {
       if (assertion.source) {
         log.error(assertion.source.replace(/ {4}(at)/g, '  $1'));
       }
+      log.error('Stacktrace: ' + formatMessage(assertion.stackArray.map(function(frame){ 
+        var fn;
+        if (frame['function']) {
+          fn = frame['function'];
+        } else {
+          fn = "(anonymous function)";
+        }
+
+        return "\n" + fn + "\t\t\t" + frame.sourceURL + ":" + frame.line;
+      })));
       log.writeln();
     }
   }
