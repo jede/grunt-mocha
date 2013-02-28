@@ -1,3 +1,23 @@
+# 0.2.0
+* **Grunt >=0.4.0 only, MIGRATION REQUIRED if updating from 0.1.x**
+* Uses grunt-lib-phantomjs for easy PhantomJS installation!
+* If things are not working right, try removing and installing via npm again.
+* Config changes required
+    * `tasks/mocha/mocha-helper.js` has been moved to `phantomjs/bridge.js`, if you are including it manually, you must change the path/filename
+    * Task options are now nested in the `options` key per task/target
+
+```js
+all: {
+    src: ['test.js'],
+    options: {
+        mocha: {
+            ui: 'tdd'
+        },
+        run: true
+    }
+}
+```
+
 # 0.1.7
 * Fix bad legacy mocha check for mocha < 1.4.2 (rohni)
 

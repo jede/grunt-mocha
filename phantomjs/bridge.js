@@ -31,24 +31,24 @@
       var stats = this.stats;
 
       runner.on('test', function(test) {
-        sendMessage('testStart', test.title);
+        sendMessage('mocha.testStart', test.title);
       });
 
       runner.on('test end', function(test) {
-        sendMessage('testDone', test.title, test.state);
+        sendMessage('mocha.testDone', test.title, test.state);
       });
 
       runner.on('suite', function(suite) {
-        sendMessage('suiteStart', suite.title);
+        sendMessage('mocha.suiteStart', suite.title);
       });
 
       runner.on('suite end', function(suite) {
         if (suite.root) return;
-        sendMessage('suiteDone', suite.title);
+        sendMessage('mocha.suiteDone', suite.title);
       });
 
       runner.on('fail', function(test, err) {
-        sendMessage('testFail', test.title, err);
+        sendMessage('mocha.testFail', test.title, err);
       });
 
       runner.on('end', function() {
@@ -58,20 +58,19 @@
         var failed  = this.failures,
           passed    = this.total - this.failures,
           total     = this.total;
-
-        sendMessage('done', failed, passed, total, time);
+        sendMessage('mocha.done', failed, passed, total, time);
       });
     };
 
-    var phantom = window.PHANTOMJS;
-    if (phantom) {
+    var options = window.PHANTOMJS;
+    if (options) {
       // Default mocha options
       var config = {
             ui: 'bdd',
             ignoreLeaks: true,
             reporter: GruntReporter
           },
-          options = phantom.options,
+          run = options.run,
           key;
 
       if (options) {
@@ -80,7 +79,7 @@
           config.ui = options;
         } else {
           // Extend defaults with passed options
-          for (key in options) {
+          for (key in options.mocha) {
             config[key] = options[key];
           }
         }
@@ -89,7 +88,9 @@
       config.reporter = GruntReporter;
 
       mocha.setup(config);
-      if (phantom.run) {
+
+      // task option `run`, automatically runs mocha for grunt only
+      if (run) {
         mocha.run();
       }
     }
